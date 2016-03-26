@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# This script is triggered by /etc/udev/rules.d/display_hotplug.rules
+# and will turn external monitors on or off based on udev changes.
+# This is only to function with 2 displays
+
+export DISPLAY=:0
+export XAUTHORITY=$HOME/.Xauthority
+
+A_DPORTS=( $(xrandr | grep -w "connected" | awk '{print $1}') )
+DPORT1=${A_DPORTS[0]}
+DPORT2=${A_DPORTS[1]}
+
+function connect(){
+A_DPORTS=( $(xrandr | grep -w "connected" | awk '{print $1}') )
+DPORT1=${A_DPORTS[0]}
+DPORT2=${A_DPORTS[1]}
+    xrandr --output $DPORT1 --auto --output $DPORT2 --auto --right-of $DPORT1 && ltheme starstorm
+}
+  
+function disconnect(){
+A_DPORTS=( $(xrandr | grep -w "connected" | awk '{print $1}') )
+DPORT1=${A_DPORTS[0]}
+DPORT2=${A_DPORTS[1]}
+      xrandr --output $DPORT1 -s 0 --output $DPORT2 --off
+}
+   
+xrandr | grep "$DPORT2 connected" &> /dev/null && connect || disconnect
