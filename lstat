@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# This script will print a colorized list of files and folders from the current directory
+# and show the user:group ownership, as well as the file permissions in a human-readable format
+# TODO: add options to show/hide hidden files
+
+LSOWN=$(ls -ACl --group-directories-first . | awk '{print $9}' | sed 1d)
+CLIST=$(ls -AFCl --group-directories-first --color=always . | awk '{print $9}' | sed 1d)
+
+    statlist () {
+        for i in $LSOWN; do
+            stat -c '%a  %U:%G' $i;
+        done
+    }
+
+STAT=$(statlist)
+
+    paste <(echo "$STAT") <(echo "$CLIST") -d ' ' | column -t
