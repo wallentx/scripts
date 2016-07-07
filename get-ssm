@@ -2,7 +2,7 @@
 
 CHECK_SSM=$(command -v amazon-ssm-agent)
 
-checkdeps() {
+checkagent() {
 if [[ -z "$CHECK_SSM" ]]; then
     DIST=$(lsb_release -si)
     if [[ "$DIST" == 'Ubuntu' ]]; then
@@ -28,7 +28,9 @@ if [[ -z "$CHECK_SSM" ]]; then
         sudo start amazon-ssm-agent
         sudo status amazon-ssm-agent
     fi
+else
+    echo "amazon-ssm-agent is already installed"
 fi
 }
 
-checkdeps
+checkagent
