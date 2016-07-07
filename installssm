@@ -29,5 +29,6 @@ if [[ -z "$CHECK_SSM" ]]; then
         sudo status amazon-ssm-agent
     fi
 fi
+}
 
 checkdeps
