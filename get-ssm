@@ -1,0 +1,34 @@
+#!/bin/bash
+
+CHECK_SSM=$(command -v amazon-ssm-agent)
+
+checkdeps() {
+if [[ -z "$CHECK_SSM" ]]; then
+    DIST=$(lsb_release -si)
+    if [[ "$DIST" == 'Ubuntu' ]]; then
+        ARCH=$(uname -m)
+        if [ $ARCH == 'x86_64' ]; then
+            curl -o /tmp/amazon-ssm-agent.deb https://amazon-ssm-us-east-1.s3.amazonaws.com/latest/debian_amd64/amazon-ssm-agent.deb
+        else
+            curl -o /tmp/amazon-ssm-agent.deb https://amazon-ssm-us-east-1.s3.amazonaws.com/latest/debian_amd64/amazon-ssm-agent.deb
+        fi
+        sudo dpkg -i /tmp/amazon-ssm-agent.deb
+        sudo status amazon-ssm-agent
+        sudo start amazon-ssm-agent
+        sudo status amazon-ssm-agent
+    elif [[ "$DIST" == 'AmazonAMI' ]]; then
+        ARCH=$(uname -m)
+        if [ $ARCH == 'x86_64' ]; then
+            curl -o /tmp/amazon-ssm-agent.rpm https://amazon-ssm-us-east-1.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm
+        else
+            curl -o /tmp/amazon-ssm-agent.rpm https://amazon-ssm-us-east-1.s3.amazonaws.com/latest/linux_386/amazon-ssm-agent.rpm
+        fi
+        sudo yum install -y /tmp/amazon-ssm-agent.rpm
+        sudo status amazon-ssm-agent
+        sudo start amazon-ssm-agent
+        sudo status amazon-ssm-agent
+    fi
+fi
+}
+
+checkdeps
